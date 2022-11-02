@@ -1,0 +1,13 @@
+../can-lib-main/can-lib-main/src/vesc.cpp:7:1:PSR::VescCAN::VescCAN(PSR::CANBus&, uint8_t)	24	static
+../can-lib-main/can-lib-main/src/vesc.cpp:12:10:uint32_t PSR::VescCAN::CreateId(uint32_t)	16	static
+../can-lib-main/can-lib-main/src/vesc.cpp:17:6:void PSR::VescCAN::SetDutyCycle(float)	56	static
+../can-lib-main/can-lib-main/src/vesc.cpp:32:6:void PSR::VescCAN::SetCurrent(float)	56	static
+../can-lib-main/can-lib-main/src/vesc.cpp:47:6:void PSR::VescCAN::SetBrakeCurrent(float)	56	static
+../can-lib-main/can-lib-main/src/vesc.cpp:62:6:void PSR::VescCAN::SetRPM(float)	56	static
+../can-lib-main/can-lib-main/src/vesc.cpp:77:6:void PSR::VescCAN::SetPosition(float)	56	static
+../can-lib-main/can-lib-main/src/vesc.cpp:92:6:void PSR::VescCAN::SetRelativeCurrent(float)	56	static
+../can-lib-main/can-lib-main/src/vesc.cpp:107:6:void PSR::VescCAN::SetRelativeBrakeCurrent(float)	56	static
+../can-lib-main/can-lib-main/src/vesc.cpp:122:6:void PSR::VescCAN::SetCurrentLimits(float, float)	64	static
+../can-lib-main/can-lib-main/src/vesc.cpp:138:6:void PSR::VescCAN::SetCurrentLimitsAndStore(float, float)	64	static
+../can-lib-main/can-lib-main/src/vesc.cpp:154:6:void PSR::VescCAN::SetInputCurrentLimits(float, float)	64	static
+../can-lib-main/can-lib-main/src/vesc.cpp:170:6:void PSR::VescCAN::SetInputCurrentLimitsAndStore(float, float)	64	static

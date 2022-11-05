@@ -46,11 +46,13 @@ using namespace PSR;
 /* Private variables ---------------------------------------------------------*/
  SPI_HandleTypeDef hspi1;
 
-TIM_HandleTypeDef htim1;
+ TIM_HandleTypeDef htim3;
+
 
 UART_HandleTypeDef huart2;
 
 CAN_HandleTypeDef hcan;
+
 
 /* USER CODE BEGIN PV */
 
@@ -61,8 +63,8 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_USART2_UART_Init(void);
-static void MX_TIM1_Init(void);
 static void MX_CAN_Init(void);
+static void MX_TIM3_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -102,25 +104,26 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI1_Init();
   MX_USART2_UART_Init();
-  MX_TIM1_Init();
   MX_CAN_Init();
+  MX_TIM3_Init();
+
   /* USER CODE BEGIN 2 */
   //initializes serial communications
   RetargetInit(&huart2);
+  CANBus::Config config = {.AutoRetransmit = true, .FilterMask = 0x7FF};
+  CANBus can = PSR::CANBus(hcan,config);
+  can.Init();
+  VescCAN vesc = VescCAN(can,113);
+  HAL_Delay(1000);
 
   //initializes the timer used for delay
-  HAL_TIM_Base_Start(&htim1);
+  HAL_TIM_Base_Start(&htim3);
 
-  //initializes the final_position
+  //initializes the SPI position
   int16_t final_position;
+  float adjusted_position;
 
-  //CAN setup
-  CANBus::Config config = { .AutoRetransmit = true, .FilterMask = 0x7ff };
-  CANBus can = CANBus(hcan,config);
-  can.Init();
-  VescCAN vesc = VescCAN(can, 113);
-
-  //reset the encoder
+  //SPI setup
   HAL_StatusTypeDef checkStatus;
 
   uint8_t spi_Tx[2];
@@ -161,10 +164,35 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	final_position = abs(getPosition(0));
-	printf("%d\n",(int)final_position);
-	duty = ((int)final_position/1500.0);
-	vesc.SetDutyCycle(duty);
+	  int16_t final_position;
+	  		int16_t actual_position;
+
+	  		HAL_StatusTypeDef checkStatus;
+
+	  		uint8_t spi_Tx[2];
+	  		uint8_t spi_Rx[2];
+
+	  		spi_Tx[0] = 0x00;
+	  		spi_Tx[1] = 0x00;
+
+	  	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_3,GPIO_PIN_RESET);
+	  			delay_us(3);
+	  			checkStatus = HAL_SPI_TransmitReceive(&hspi1,&spi_Tx[0],&spi_Rx[0],1,50);
+	  			delay_us(3);
+	  			checkStatus = (HAL_StatusTypeDef)((int)checkStatus & (int)HAL_SPI_TransmitReceive(&hspi1,&spi_Tx[1],&spi_Rx[1],1,50));
+	  			delay_us(4);
+
+	  			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_3,GPIO_PIN_SET);
+	  			delay_us(40);
+
+	  			final_position = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
+
+	  			final_position &=(0b0011111111111111);
+	HAL_Delay(1);
+
+	final_position = (float)final_position/16000.0;
+	//final_position = abs(getPosition(0));
+	vesc.SetDutyCycle(final_position);
 
   /* USER CODE END 3 */
   }
@@ -222,11 +250,11 @@ static void MX_CAN_Init(void)
 
   /* USER CODE END CAN_Init 1 */
   hcan.Instance = CAN;
-  hcan.Init.Prescaler = 160;
+  hcan.Init.Prescaler = 80;
   hcan.Init.Mode = CAN_MODE_NORMAL;
   hcan.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan.Init.TimeSeg1 = CAN_BS1_1TQ;
-  hcan.Init.TimeSeg2 = CAN_BS2_1TQ;
+  hcan.Init.TimeSeg1 = CAN_BS1_3TQ;
+  hcan.Init.TimeSeg2 = CAN_BS2_2TQ;
   hcan.Init.TimeTriggeredMode = DISABLE;
   hcan.Init.AutoBusOff = DISABLE;
   hcan.Init.AutoWakeUp = DISABLE;
@@ -288,44 +316,43 @@ static void MX_SPI1_Init(void)
   * @param None
   * @retval None
   */
-static void MX_TIM1_Init(void)
+static void MX_TIM3_Init(void)
 {
 
-  /* USER CODE BEGIN TIM1_Init 0 */
+  /* USER CODE BEGIN TIM3_Init 0 */
 
-  /* USER CODE END TIM1_Init 0 */
+  /* USER CODE END TIM3_Init 0 */
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
 
-  /* USER CODE BEGIN TIM1_Init 1 */
+  /* USER CODE BEGIN TIM3_Init 1 */
 
-  /* USER CODE END TIM1_Init 1 */
-  htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 48-1;
-  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 0xffff-1;
-  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim1.Init.RepetitionCounter = 0;
-  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
+  /* USER CODE END TIM3_Init 1 */
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 48-1;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 0xffff-1;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
   {
     Error_Handler();
   }
   sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
+  if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
   {
     Error_Handler();
   }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN TIM1_Init 2 */
+  /* USER CODE BEGIN TIM3_Init 2 */
 
-  /* USER CODE END TIM1_Init 2 */
+  /* USER CODE END TIM3_Init 2 */
 
 }
 
@@ -398,8 +425,8 @@ int BitExtract(int value, int bit)
 
 void delay_us (uint16_t us)
 {
-	__HAL_TIM_SET_COUNTER(&htim1,0);  // set the counter value a 0
-	while (__HAL_TIM_GET_COUNTER(&htim1) < us);  // wait for the counter to reach the us input in the parameter
+	__HAL_TIM_SET_COUNTER(&htim3,0);  // set the counter value a 0
+	while (__HAL_TIM_GET_COUNTER(&htim3) < us);  // wait for the counter to reach the us input in the parameter
 
 }
 #define bx BitExtract

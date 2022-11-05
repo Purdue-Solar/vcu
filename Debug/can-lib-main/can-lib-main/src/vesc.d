@@ -1,8 +1,8 @@
 can-lib-main/can-lib-main/src/vesc.o: \
  ../can-lib-main/can-lib-main/src/vesc.cpp \
- C:/Users/joemc/STM32CubeIDE/workspace_1.9.0/STM32F0_AMT223-B/can-lib-main/can-lib-main/inc/vesc.h \
- C:/Users/joemc/STM32CubeIDE/workspace_1.9.0/STM32F0_AMT223-B/can-lib-main/can-lib-main/inc/can_lib.h \
- C:/Users/joemc/STM32CubeIDE/workspace_1.9.0/STM32F0_AMT223-B/can-lib-main/can-lib-main/inc/stm32/f0_common.h \
+ C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/vesc.h \
+ C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/can_lib.h \
+ C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/stm32/f0_common.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h \
  ../Core/Inc/stm32f0xx_hal_conf.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_rcc.h \
@@ -36,11 +36,11 @@ can-lib-main/can-lib-main/src/vesc.o: \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_def.h \
- C:/Users/joemc/STM32CubeIDE/workspace_1.9.0/STM32F0_AMT223-B/can-lib-main/can-lib-main/inc/_can_interface_alias.h \
- C:/Users/joemc/STM32CubeIDE/workspace_1.9.0/STM32F0_AMT223-B/can-lib-main/can-lib-main/inc/can_lib.h
-C:/Users/joemc/STM32CubeIDE/workspace_1.9.0/STM32F0_AMT223-B/can-lib-main/can-lib-main/inc/vesc.h:
-C:/Users/joemc/STM32CubeIDE/workspace_1.9.0/STM32F0_AMT223-B/can-lib-main/can-lib-main/inc/can_lib.h:
-C:/Users/joemc/STM32CubeIDE/workspace_1.9.0/STM32F0_AMT223-B/can-lib-main/can-lib-main/inc/stm32/f0_common.h:
+ C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/_can_interface_alias.h \
+ C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/can_lib.h
+C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/vesc.h:
+C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/can_lib.h:
+C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/stm32/f0_common.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h:
 ../Core/Inc/stm32f0xx_hal_conf.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_rcc.h:
@@ -74,5 +74,5 @@ C:/Users/joemc/STM32CubeIDE/workspace_1.9.0/STM32F0_AMT223-B/can-lib-main/can-li
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_def.h:
-C:/Users/joemc/STM32CubeIDE/workspace_1.9.0/STM32F0_AMT223-B/can-lib-main/can-lib-main/inc/_can_interface_alias.h:
-C:/Users/joemc/STM32CubeIDE/workspace_1.9.0/STM32F0_AMT223-B/can-lib-main/can-lib-main/inc/can_lib.h:
+C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/_can_interface_alias.h:
+C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/can_lib.h:

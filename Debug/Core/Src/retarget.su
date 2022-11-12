@@ -1,7 +1,0 @@
-../Core/Src/retarget.cpp:23:6:void RetargetInit(UART_HandleTypeDef*)	16	static
-../Core/Src/retarget.cpp:31:5:int _isatty(int)	16	static
-../Core/Src/retarget.cpp:39:5:int _write(int, char*, int)	40	static
-../Core/Src/retarget.cpp:53:5:int _close(int)	16	static
-../Core/Src/retarget.cpp:61:5:int _lseek(int, int, int)	24	static
-../Core/Src/retarget.cpp:70:5:int _read(int, char*, int)	40	static
-../Core/Src/retarget.cpp:84:5:int _fstat(int, stat*)	16	static

@@ -18,14 +18,9 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include "run.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "retarget.h"
-#define BOARD_STM32F 0
-#include "can_lib.h"
-#include "vesc.h"
-using namespace PSR;
 
 /* USER CODE END Includes */
 
@@ -108,50 +103,9 @@ int main(void)
   MX_TIM3_Init();
 
   /* USER CODE BEGIN 2 */
-  //initializes serial communications
-  RetargetInit(&huart2);
-  CANBus::Config config = {.AutoRetransmit = true, .FilterMask = 0x7FF};
-  CANBus can = PSR::CANBus(hcan,config);
-  can.Init();
-  VescCAN vesc = VescCAN(can,113);
-  HAL_Delay(1000);
-
   //initializes the timer used for delay
   HAL_TIM_Base_Start(&htim3);
-
-  //initializes the SPI position
-  int16_t final_position;
-  float adjusted_position;
-
-  //SPI setup
-  HAL_StatusTypeDef checkStatus;
-
-  uint8_t spi_Tx[2];
-  uint8_t spi_Rx[2];
-
-  uint16_t rx;
-/*
-  do{
-	spi_Tx[0] = 0x00;
-	spi_Tx[1] = 0x70;
-  	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_3,GPIO_PIN_RESET);
-  	delay_us(3);
-  	checkStatus = HAL_SPI_TransmitReceive(&hspi1,&spi_Tx[0],&spi_Rx[0],1,50);
-  	delay_us(3);
-  	checkStatus = (HAL_StatusTypeDef)((int)checkStatus & (int)HAL_SPI_TransmitReceive(&hspi1,&spi_Tx[1],&spi_Rx[1],1,50));
-  	delay_us(4);
-
-  	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_3,GPIO_PIN_SET);
-  	delay_us(40);
-
-  	rx = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
-  	rx &=(0b0011111111111111);
-  	printf("Pos: %d\n",(int)rx);
-  	}while(checkStatus != HAL_OK || !AMT223_Check(rx));
-  	HAL_Delay(250);
-*/
-
-  	float duty;
+  startUp(&htim3,&hcan,&hspi1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -159,41 +113,10 @@ int main(void)
 
   while (1)
   {
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
-	  int16_t final_position;
-	  		int16_t actual_position;
-
-	  		HAL_StatusTypeDef checkStatus;
-
-	  		uint8_t spi_Tx[2];
-	  		uint8_t spi_Rx[2];
-
-	  		spi_Tx[0] = 0x00;
-	  		spi_Tx[1] = 0x00;
-
-	  	HAL_GPIO_WritePin(GPIOB,GPIO_PIN_3,GPIO_PIN_RESET);
-	  			delay_us(3);
-	  			checkStatus = HAL_SPI_TransmitReceive(&hspi1,&spi_Tx[0],&spi_Rx[0],1,50);
-	  			delay_us(3);
-	  			checkStatus = (HAL_StatusTypeDef)((int)checkStatus & (int)HAL_SPI_TransmitReceive(&hspi1,&spi_Tx[1],&spi_Rx[1],1,50));
-	  			delay_us(4);
-
-	  			HAL_GPIO_WritePin(GPIOB,GPIO_PIN_3,GPIO_PIN_SET);
-	  			delay_us(40);
-
-	  			final_position = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
-
-	  			final_position &=(0b0011111111111111);
-	HAL_Delay(1);
-
-	final_position = (float)final_position/16000.0;
-	//final_position = abs(getPosition(0));
-	vesc.SetDutyCycle(final_position);
-
+	  loop(&htim3,&hcan,&hspi1);
   /* USER CODE END 3 */
   }
 }
@@ -416,79 +339,6 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
-
-/* USER CODE BEGIN 4 */
-int BitExtract(int value, int bit)
-{
-	return((value>>bit) & 1);
-}
-
-void delay_us (uint16_t us)
-{
-	__HAL_TIM_SET_COUNTER(&htim3,0);  // set the counter value a 0
-	while (__HAL_TIM_GET_COUNTER(&htim3) < us);  // wait for the counter to reach the us input in the parameter
-
-}
-#define bx BitExtract
-bool AMT223_Check(uint16_t value)
-{
-	int k1 = BitExtract(value, 15);
-	int k0 = BitExtract(value, 14);
-
-	int checkOdd = !(bx(value,13)^bx(value,11)^bx(value,9)^bx(value,7)^bx(value,5)^bx(value,3)^bx(value,1));
-	int checkEven = !(bx(value,12)^bx(value,10)^bx(value,8)^bx(value,6)^bx(value,4)^bx(value,2)^bx(value,0));
-
-	return((k1 == checkOdd) && (k0 == checkEven));
-}
-
-int16_t averageValueAMT223b(int num,int16_t initial_position)
-{
-	int16_t total;
-
-	//Generic average function taking the average of num positions from the AMT223 optical encoder
-	for(int i = 0; i < num; i++)
-	{
-		total+=getPosition(initial_position);
-	}
-	total = total/num;
-	return total;
-}
-
-
-int16_t getPosition(int16_t initial_position)
-{
-
-	uint16_t final_position;
-	int16_t actual_position;
-
-	HAL_StatusTypeDef checkStatus;
-
-	uint8_t spi_Tx[2];
-	uint8_t spi_Rx[2];
-
-	spi_Tx[0] = 0x00;
-	spi_Tx[1] = 0x00;
-
-	do{
-		HAL_GPIO_WritePin(GPIOB,GPIO_PIN_3,GPIO_PIN_RESET);
-		delay_us(3);
-		checkStatus = HAL_SPI_TransmitReceive(&hspi1,&spi_Tx[0],&spi_Rx[0],1,50);
-		delay_us(3);
-		checkStatus = (HAL_StatusTypeDef)((int)checkStatus & (int)HAL_SPI_TransmitReceive(&hspi1,&spi_Tx[1],&spi_Rx[1],1,50));
-		delay_us(4);
-
-		HAL_GPIO_WritePin(GPIOB,GPIO_PIN_3,GPIO_PIN_SET);
-		delay_us(40);
-
-		final_position = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
-
-		final_position &=(0b0011111111111111);
-	  }while(checkStatus != HAL_OK || !AMT223_Check(final_position));
-
-	actual_position = (((final_position << 2) - (initial_position << 2)) >> 2);
-	return actual_position;
-}
-
 /* USER CODE END 4 */
 
 /**

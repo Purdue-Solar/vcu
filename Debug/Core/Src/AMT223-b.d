@@ -1,5 +1,8 @@
-Core/Src/retarget.o: ../Core/Src/retarget.cpp \
- ../Core/Inc/../Inc/retarget.h \
+Core/Src/AMT223-b.o: ../Core/Src/AMT223-b.cpp ../Core/Src/AMT223-b.h \
+ ../Core/Src/run.h \
+ C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/vesc.h \
+ C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/can_lib.h \
+ C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/stm32/f0_common.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h \
  ../Core/Inc/stm32f0xx_hal_conf.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_rcc.h \
@@ -31,8 +34,14 @@ Core/Src/retarget.o: ../Core/Src/retarget.cpp \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim_ex.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h \
- ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h
-../Core/Inc/../Inc/retarget.h:
+ ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h \
+ ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_def.h \
+ C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/_can_interface_alias.h
+../Core/Src/AMT223-b.h:
+../Core/Src/run.h:
+C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/vesc.h:
+C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/can_lib.h:
+C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/stm32/f0_common.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h:
 ../Core/Inc/stm32f0xx_hal_conf.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_rcc.h:
@@ -65,3 +74,5 @@ Core/Src/retarget.o: ../Core/Src/retarget.cpp \
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim_ex.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h:
+../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_def.h:
+C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib-main/can-lib-main/inc/_can_interface_alias.h:

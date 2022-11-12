@@ -1,13 +1,8 @@
-../Core/Src/main.cpp:81:5:int main()	96	static
-../Core/Src/main.cpp:205:6:void SystemClock_Config()	112	static
-../Core/Src/main.cpp:242:13:void MX_CAN_Init()	8	static
-../Core/Src/main.cpp:279:13:void MX_SPI1_Init()	8	static
-../Core/Src/main.cpp:319:13:void MX_TIM3_Init()	32	static
-../Core/Src/main.cpp:364:13:void MX_USART2_UART_Init()	8	static
-../Core/Src/main.cpp:399:13:void MX_GPIO_Init()	48	static
-../Core/Src/main.cpp:421:5:int BitExtract(int, int)	16	static
-../Core/Src/main.cpp:426:6:void delay_us(uint16_t)	16	static
-../Core/Src/main.cpp:433:6:bool AMT223_Check(uint16_t)	40	static
-../Core/Src/main.cpp:444:9:int16_t averageValueAMT223b(int, int16_t)	32	static
-../Core/Src/main.cpp:458:9:int16_t getPosition(int16_t)	56	static
-../Core/Src/main.cpp:498:6:void Error_Handler()	8	static,ignoring_inline_asm
+../Core/Src/main.cpp:76:5:int main()	8	static
+../Core/Src/main.cpp:128:6:void SystemClock_Config()	112	static
+../Core/Src/main.cpp:165:13:void MX_CAN_Init()	8	static
+../Core/Src/main.cpp:202:13:void MX_SPI1_Init()	8	static
+../Core/Src/main.cpp:242:13:void MX_TIM3_Init()	32	static
+../Core/Src/main.cpp:287:13:void MX_USART2_UART_Init()	8	static
+../Core/Src/main.cpp:322:13:void MX_GPIO_Init()	48	static
+../Core/Src/main.cpp:348:6:void Error_Handler()	8	static,ignoring_inline_asm

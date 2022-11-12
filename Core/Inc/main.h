@@ -55,11 +55,6 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-int BitExtract(int value, int bit);
-bool AMT223_Check(uint16_t value);
-void delay_us (uint16_t us);
-int16_t getPosition(int16_t initial_position);
-int16_t averageValueAMT223b(int num,int16_t initial_position);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

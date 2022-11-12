@@ -1,5 +1,6 @@
+"./Core/Src/AMT223-b.o"
 "./Core/Src/main.o"
-"./Core/Src/retarget.o"
+"./Core/Src/run.o"
 "./Core/Src/stm32f0xx_hal_msp.o"
 "./Core/Src/stm32f0xx_it.o"
 "./Core/Src/sysmem.o"

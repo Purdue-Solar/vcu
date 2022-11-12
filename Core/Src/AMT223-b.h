@@ -1,4 +1,3 @@
-/*JosephMcAlear — Today at 10:44 AM
 /**
  * @file delay.h
  * @author Purdue Solar (Joseph McAlear)
@@ -10,8 +9,8 @@
  *
  */
 
-#ifndef __AMT223-b_H
-#define __AMT223-b_H
+#ifndef __AMT223_B_H
+#define __AMT223_B_H
 
 
 #include "run.h"

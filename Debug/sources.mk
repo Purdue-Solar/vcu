@@ -34,5 +34,5 @@ SUBDIRS := \
 Core/Src \
 Core/Startup \
 Drivers/STM32F0xx_HAL_Driver/Src \
-can-lib-main/can-lib-main/src \
+can-lib/src \
 

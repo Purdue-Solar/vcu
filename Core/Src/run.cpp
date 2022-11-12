@@ -6,14 +6,15 @@ using namespace PSR;
 
 extern "C"
 {
-VescCAN vesc;
+VescCAN* vesc;
+
 void startUp(TIM_HandleTypeDef * htim, CAN_HandleTypeDef * hcan,SPI_HandleTypeDef * hspi)
 {
 	//initializes the can communications
 	CANBus::Config config = {.AutoRetransmit = true, .FilterMask = 0x7FF};
 	CANBus can = PSR::CANBus(*hcan,config);
 	can.Init();
-	vesc = VescCAN(can,113);
+	vesc = new VescCAN(can,113);
 	HAL_Delay(1000);
 
 	//Reset the optical encoder
@@ -48,7 +49,7 @@ void loop(TIM_HandleTypeDef * htim, CAN_HandleTypeDef * hcan,SPI_HandleTypeDef *
 			if(amt223Check(finalPosition))
 			{
 				float duty = finalPosition/16000.0;
-				vesc.SetDutyCycle(duty);
+				vesc->SetDutyCycle(duty);
 			}
 		}
 	}

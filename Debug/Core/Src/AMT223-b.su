@@ -1,4 +1,5 @@
-../Core/Src/AMT223-b.cpp:10:5:int bitExtract(int, int)	16	static
-../Core/Src/AMT223-b.cpp:21:6:bool amt223Check(uint16_t)	40	static
-../Core/Src/AMT223-b.cpp:39:6:void delayMicro(uint16_t, TIM_HandleTypeDef*)	16	static
-../Core/Src/AMT223-b.cpp:53:19:HAL_StatusTypeDef sendByte(uint8_t*, bool, SPI_HandleTypeDef*, TIM_HandleTypeDef*, uint8_t*)	48	static
+../Core/Src/AMT223-b.cpp:11:5:int bitExtract(int, int)	16	static
+../Core/Src/AMT223-b.cpp:22:6:bool amt223Check(uint16_t)	40	static
+../Core/Src/AMT223-b.cpp:40:6:void delayMicro(uint16_t, TIM_HandleTypeDef*)	16	static
+../Core/Src/AMT223-b.cpp:54:19:HAL_StatusTypeDef sendByte(uint8_t*, bool, SPI_HandleTypeDef*, TIM_HandleTypeDef*, uint8_t*)	48	static
+../Core/Src/AMT223-b.cpp:79:6:void resetEncoder(SPI_HandleTypeDef*, TIM_HandleTypeDef*)	56	static

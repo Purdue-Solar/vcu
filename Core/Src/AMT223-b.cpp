@@ -2,10 +2,11 @@
 //TODO Add Function headers
 
 /**
-* @brief Transmit a CAN frame
+* @brief Extracts a bit from the data
 *
-* @param frame The frame data to send
-* @return A status representing whether the frame was successfully sent
+* @param value: value to be extracted from, bit: bit location to be extracted
+*
+* @return extracted bit
 */
 int bitExtract(int value, int bit)
 {
@@ -13,10 +14,10 @@ int bitExtract(int value, int bit)
 }
 #define bx bitExtract
 /**
-* @brief Transmit a CAN frame
+* @brief Executes the checkbit value from the AMT223 data
 *
-* @param frame The frame data to send
-* @return A status representing whether the frame was successfully sent
+* @param value: data to be checked
+* @return Status indicating if the data passed the formula test
 */
 bool amt223Check(uint16_t value)
 {
@@ -31,10 +32,10 @@ bool amt223Check(uint16_t value)
 }
 
 /**
-* @brief Transmit a CAN frame
+* @brief Delays in microseconds
 *
-* @param frame The frame data to send
-* @return A status representing whether the frame was successfully sent
+* @param us: amount of microseconds to delay, htim: pointer to the timer
+* @return VOID
 */
 void delayMicro(uint16_t us, TIM_HandleTypeDef * htim)
 {
@@ -45,10 +46,10 @@ void delayMicro(uint16_t us, TIM_HandleTypeDef * htim)
 
 
 /**
-* @brief Transmit a CAN frame
+* @brief Send a byte of data to the AMT223b optical encoder and get the data back
 *
-* @param frame The frame data to send
-* @return A status representing whether the frame was successfully sent
+* @param sendByte: byte to be sent, pullLow: indicating if the CS line should be pulled low, hspi: pointer to the SPI setup, htim: pointer to the timer, receiveByte: data byte recieved from the optical encoder
+* @return HAL_Status of the byte that was sent
 */
 HAL_StatusTypeDef sendByte(uint8_t * sendByte, bool pullLow, SPI_HandleTypeDef * hspi, TIM_HandleTypeDef * htim, uint8_t * receiveByte)
 {
@@ -68,4 +69,36 @@ HAL_StatusTypeDef sendByte(uint8_t * sendByte, bool pullLow, SPI_HandleTypeDef *
 		delayMicro(40,htim);
 	}
 	return checkStatus;
+}
+/**
+* @brief Reset the AMT223b optical encoder
+*
+* @param hspi: pointer to the SPI setup, htim: pointer to the timer
+* @return VOID
+*/
+void resetEncoder(SPI_HandleTypeDef * hspi, TIM_HandleTypeDef * htim)
+{
+	bool checkValue = false;
+
+	HAL_StatusTypeDef checkHALStatus;
+
+	uint8_t spi_Tx[2];
+	uint8_t spi_Rx[2];
+
+	spi_Tx[0] = 0x00;
+	spi_Tx[1] = 0x70;
+
+	while(!checkValue)
+	{
+		checkHALStatus = sendByte(&spi_Tx[0],true,hspi,htim,&spi_Rx[0]);
+		if(checkHALStatus == HAL_OK)
+		{
+			checkHALStatus = sendByte(&spi_Tx[1],false,hspi,htim,&spi_Rx[1]);
+			if(checkHALStatus == HAL_OK)
+			{
+				int16_t finalPosition = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
+				checkValue = amt223Check(finalPosition);
+			}
+		}
+	}
 }

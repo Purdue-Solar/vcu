@@ -76,8 +76,8 @@ all: main-build
 main-build: STM32F0_AMT223-B.elf secondary-outputs
 
 # Tool invocations
-STM32F0_AMT223-B.elf STM32F0_AMT223-B.map: $(OBJS) $(USER_OBJS) C:\Users\aidan\Downloads\AMT223b-SPI\STM32F072RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "STM32F0_AMT223-B.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Users\aidan\Downloads\AMT223b-SPI\STM32F072RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32F0_AMT223-B.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+STM32F0_AMT223-B.elf STM32F0_AMT223-B.map: $(OBJS) $(USER_OBJS) C:\Users\joemc\OneDrive\Documents\GitHub\AMT223b-SPI\STM32F072RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "STM32F0_AMT223-B.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Users\joemc\OneDrive\Documents\GitHub\AMT223b-SPI\STM32F072RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32F0_AMT223-B.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

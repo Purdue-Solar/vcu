@@ -1,0 +1,6 @@
+../can-lib/src/stm32.cpp:19:1:PSR::CANBus::CANBus(PSR::CANBus::Interface&, const PSR::CANBus::Config&)	32	static
+../can-lib/src/stm32.cpp:24:6:void PSR::CANBus::Init()	56	static
+../can-lib/src/stm32.cpp:46:24:PSR::CANBus::TransmitStatus PSR::CANBus::Transmit(const PSR::CANBus::Frame&)	56	static
+../can-lib/src/stm32.cpp:89:6:void PSR::CANBus::SetRxCallback(PSR::CANBus::Callback)	24	static
+../can-lib/src/stm32.cpp:107:6:void PSR::CANBus::ClearRxCallback()	24	static
+../can-lib/src/stm32.cpp:134:10:void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*)	96	static

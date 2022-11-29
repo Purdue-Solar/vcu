@@ -1,8 +1,8 @@
 Core/Src/AMT223-b.o: ../Core/Src/AMT223-b.cpp ../Core/Src/AMT223-b.h \
  ../Core/Src/run.h \
- C:/Users/aidan/Downloads/AMT223b-SPI/can-lib/inc/vesc.h \
- C:/Users/aidan/Downloads/AMT223b-SPI/can-lib/inc/can_lib.h \
- C:/Users/aidan/Downloads/AMT223b-SPI/can-lib/inc/stm32/f0_common.h \
+ C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib/inc/vesc.h \
+ C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib/inc/can_lib.h \
+ C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib/inc/stm32/f0_common.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h \
  ../Core/Inc/stm32f0xx_hal_conf.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_rcc.h \
@@ -36,12 +36,12 @@ Core/Src/AMT223-b.o: ../Core/Src/AMT223-b.cpp ../Core/Src/AMT223-b.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_def.h \
- C:/Users/aidan/Downloads/AMT223b-SPI/can-lib/inc/_can_interface_alias.h
+ C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib/inc/_can_interface_alias.h
 ../Core/Src/AMT223-b.h:
 ../Core/Src/run.h:
-C:/Users/aidan/Downloads/AMT223b-SPI/can-lib/inc/vesc.h:
-C:/Users/aidan/Downloads/AMT223b-SPI/can-lib/inc/can_lib.h:
-C:/Users/aidan/Downloads/AMT223b-SPI/can-lib/inc/stm32/f0_common.h:
+C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib/inc/vesc.h:
+C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib/inc/can_lib.h:
+C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib/inc/stm32/f0_common.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h:
 ../Core/Inc/stm32f0xx_hal_conf.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_rcc.h:
@@ -75,4 +75,4 @@ C:/Users/aidan/Downloads/AMT223b-SPI/can-lib/inc/stm32/f0_common.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h:
 ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_def.h:
-C:/Users/aidan/Downloads/AMT223b-SPI/can-lib/inc/_can_interface_alias.h:
+C:/Users/joemc/OneDrive/Documents/GitHub/AMT223b-SPI/can-lib/inc/_can_interface_alias.h:

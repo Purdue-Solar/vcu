@@ -18,12 +18,7 @@ void startUp(TIM_HandleTypeDef * htim, CAN_HandleTypeDef * hcan,SPI_HandleTypeDe
 	HAL_Delay(1000);
 
 	//Reset the optical encoder
-	uint8_t spi_Tx[2];
-	spi_Tx[0] = 0x00;
-	spi_Tx[1] = 0x00;
-
-
-
+	resetEncoder(hspi,htim);
 }
 void loop(TIM_HandleTypeDef * htim, CAN_HandleTypeDef * hcan,SPI_HandleTypeDef * hspi)
 {
@@ -48,6 +43,7 @@ void loop(TIM_HandleTypeDef * htim, CAN_HandleTypeDef * hcan,SPI_HandleTypeDef *
 
 			if(amt223Check(finalPosition))
 			{
+				finalPosition &= 0b0011111111111111;
 				float duty = finalPosition/16000.0;
 				vesc->SetDutyCycle(duty);
 			}

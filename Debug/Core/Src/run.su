@@ -1,2 +1,2 @@
-../Core/Src/run.cpp:11:6:void startUp(TIM_HandleTypeDef*, CAN_HandleTypeDef*, SPI_HandleTypeDef*)	72	static
-../Core/Src/run.cpp:28:6:void loop(TIM_HandleTypeDef*, CAN_HandleTypeDef*, SPI_HandleTypeDef*)	64	static
+../Core/Src/run.cpp:11:6:void startUp(TIM_HandleTypeDef*, CAN_HandleTypeDef*, SPI_HandleTypeDef*)	64	static
+../Core/Src/run.cpp:23:6:void loop(TIM_HandleTypeDef*, CAN_HandleTypeDef*, SPI_HandleTypeDef*)	64	static

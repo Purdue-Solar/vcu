@@ -1,4 +1,5 @@
 #define BOARD_STM32F 0
+#define MAX_AMT223B_VALUE 16383
 #include "run.h"
 #include "can_lib.h"
 #include "AMT223-b.h"
@@ -17,37 +18,67 @@ void startUp(TIM_HandleTypeDef * htim, CAN_HandleTypeDef * hcan,SPI_HandleTypeDe
 	vesc = new VescCAN(can,113);
 	HAL_Delay(1000);
 
-	//Reset the optical encoder
-	resetEncoder(hspi,htim);
-}
-void loop(TIM_HandleTypeDef * htim, CAN_HandleTypeDef * hcan,SPI_HandleTypeDef * hspi)
-{
 	//SPI Setup
-	uint8_t spi_Tx[2];
-	uint8_t spi_Rx[2];
+		uint8_t spi_Tx[2];
+		uint8_t spi_Rx[2];
 
-	HAL_StatusTypeDef checkStatus;
+		HAL_StatusTypeDef checkStatus;
 
-	//get position
-	spi_Tx[0] = 0x00;
-	spi_Tx[1] = 0x70;
+		int16_t initialPosition;
+		int16_t finalPosition;
+		int16_t relativePosition;
+		//get position
+		spi_Tx[0] = 0x00;
+		spi_Tx[1] = 0x00;
 
-	checkStatus = sendByte(spi_Tx,true,hspi,htim,spi_Rx);
-	if(checkStatus == HAL_OK)
+	for(int i = 0; i < 100; i++)
 	{
-		checkStatus = sendByte(spi_Tx + 1,false,hspi,htim,spi_Rx + 1);
-		if(checkStatus == HAL_OK)
-		{
-			//If both positions are valid and correct, then we can use the checkbit formula
-			int16_t finalPosition = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
+		checkStatus = sendByte(spi_Tx,true,hspi,htim,spi_Rx);
+				if(checkStatus == HAL_OK)
+				{
+					checkStatus = sendByte(spi_Tx + 1,false,hspi,htim,spi_Rx + 1);
+					if(checkStatus == HAL_OK)
+					{
+						//If both positions are valid and correct, then we can use the checkbit formula
+						finalPosition = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
 
-			if(amt223Check(finalPosition))
-			{
-				finalPosition &= 0b0011111111111111;
-				float duty = finalPosition/16000.0;
-				vesc->SetDutyCycle(duty);
-			}
-		}
+						if(amt223Check(finalPosition))
+						{
+							finalPosition &= 0b0011111111111111;
+							initialPosition = finalPosition;
+						}
+					}
+				}
 	}
+
+		// Continually gets the position from the optical encoder
+		while(true)
+		{
+			checkStatus = sendByte(spi_Tx,true,hspi,htim,spi_Rx);
+			if(checkStatus == HAL_OK)
+				{
+					checkStatus = sendByte(spi_Tx + 1,false,hspi,htim,spi_Rx + 1);
+					if(checkStatus == HAL_OK)
+					{
+						//If both positions are valid and correct, then we can use the checkbit formula
+						int16_t finalPosition = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
+
+						if(amt223Check(finalPosition))
+						{
+							finalPosition &= 0b0011111111111111;
+							relativePosition = finalPosition - initialPosition;
+							/*
+							if(relativePosition < 0)
+							{
+								relativePosition += MAX_AMT223B_VALUE;
+							}
+							*/
+							float duty = (float)relativePosition/MAX_AMT223B_VALUE;
+							duty = duty*12;
+							vesc->SetDutyCycle(duty);
+						}
+					}
+				}
+		}
 }
 }

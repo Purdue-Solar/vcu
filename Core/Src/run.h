@@ -26,7 +26,6 @@ extern "C"
 
 
 void startUp(TIM_HandleTypeDef * htim, CAN_HandleTypeDef * hcan,SPI_HandleTypeDef * hspi);
-void loop(TIM_HandleTypeDef * htim, CAN_HandleTypeDef * hcan,SPI_HandleTypeDef * hspi);
 
 #if __cplusplus
 #endif

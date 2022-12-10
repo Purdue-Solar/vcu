@@ -105,7 +105,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
   //initializes the timer used for delay
   HAL_TIM_Base_Start(&htim3);
-  startUp(&htim3,&hcan,&hspi1);
+  int16_t initialPosition;
+  startUp(&htim3, &hcan, &hspi1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -116,7 +117,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  loop(&htim3,&hcan,&hspi1);
   /* USER CODE END 3 */
   }
 }

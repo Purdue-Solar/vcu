@@ -3,12 +3,6 @@
 #include "bit_operations.h"
 using namespace PSR;
 
-/**
- * @brief Executes the checkbit value from the AMT223 data
- *
- * @param value data to be checked
- * @return Status indicating if the data passed the formula test
- */
 bool amt223Check(uint16_t value)
 {
 	int k1 = bitExtract(value, 15);
@@ -20,18 +14,7 @@ bool amt223Check(uint16_t value)
 	return ((k1 == checkOdd) && (k0 == checkEven));
 }
 
-/**
- * @brief Send a byte of data to the AMT223b optical encoder and get the data back
- *
- * @param sendByte byte to be sent
- * @param pullLow indicating if the CS line should be pulled low
- * @param hspi pointer to the SPI setup
- * @param htim pointer to the timer
- * @param receiveByte data byte recieved from the optical encoder
- * 
- * @return HAL_Status of the byte that was sent
- */
-HAL_StatusTypeDef sendByte(uint8_t* sendByte, bool pullLow, SPI_HandleTypeDef* hspi, TIM_HandleTypeDef* htim, uint8_t* receiveByte)
+HAL_StatusTypeDef amt223SendByte(SPI_HandleTypeDef* hspi, TIM_HandleTypeDef* htim, uint8_t* sendByte, uint8_t* receiveByte, bool pullLow)
 {
 	HAL_StatusTypeDef checkStatus;
 
@@ -48,38 +31,30 @@ HAL_StatusTypeDef sendByte(uint8_t* sendByte, bool pullLow, SPI_HandleTypeDef* h
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_SET);
 		PSR::delayMicroseconds(htim, 40);
 	}
+
 	return checkStatus;
 }
-/**
- * @brief Reset the AMT223b optical encoder
- *
- * @param hspi pointer to the SPI setup 
- * @param htim pointer to the timer
- * @return VOID
- */
-void resetEncoder(SPI_HandleTypeDef* hspi, TIM_HandleTypeDef* htim)
+
+bool amt223SendReceive(SPI_HandleTypeDef* hspi, TIM_HandleTypeDef* htim, uint8_t* sendBytes, uint8_t* receiveBytes)
 {
-	bool checkValue = false;
+	bool checkStatus1 = amt223SendByte(hspi, htim, &sendBytes[0], &receiveBytes[0], true) == HAL_OK;
+	bool checkStatus2 = amt223SendByte(hspi, htim, &sendBytes[1], &receiveBytes[1], false) == HAL_OK;
 
-	HAL_StatusTypeDef checkHALStatus;
+	return checkStatus1 && checkStatus2;
+}
 
-	uint8_t spi_Tx[2];
+void amt223Reset(SPI_HandleTypeDef* hspi, TIM_HandleTypeDef* htim)
+{
+	uint8_t spi_Tx[2] = { 0x00, 0x70 };
 	uint8_t spi_Rx[2];
 
-	spi_Tx[0] = 0x00;
-	spi_Tx[1] = 0x70;
-
-	while (!checkValue)
+	while (true)
 	{
-		checkHALStatus = sendByte(&spi_Tx[0], true, hspi, htim, &spi_Rx[0]);
-		if (checkHALStatus == HAL_OK)
+		if (amt223SendReceive(hspi, htim, spi_Tx, spi_Rx))
 		{
-			checkHALStatus = sendByte(&spi_Tx[1], false, hspi, htim, &spi_Rx[1]);
-			if (checkHALStatus == HAL_OK)
-			{
-				int16_t finalPosition = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
-				checkValue            = amt223Check(finalPosition);
-			}
+			uint16_t finalPosition = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
+			if (amt223Check(finalPosition))
+				break;
 		}
 	}
 }

@@ -19,47 +19,37 @@ extern "C"
 
 	void run(TIM_HandleTypeDef* htim, CAN_HandleTypeDef* hcan, SPI_HandleTypeDef* hspi)
 	{
+		// Initialize timer
 		HAL_TIM_Base_Start(htim);
 
-		// initializes the can communications
+		// Initializes the can communications
 		CANBus::Config config = { .AutoRetransmit = true, .FilterMask = 0x7FF };
 
 		CANBus can = PSR::CANBus(*hcan, config);
 		can.Init();
-
 		vesc = new VescCAN(can, 113);
 
 		HAL_Delay(250);
 
 		// SPI Setup
-		uint8_t spi_Tx[2];
+		uint8_t spi_Tx[2] = {0x00, 0x00};
 		uint8_t spi_Rx[2];
 
 		HAL_StatusTypeDef checkStatus;
 
 		int16_t initialPosition;
-		int16_t finalPosition;
 		int16_t relativePosition;
-		// get position
-		spi_Tx[0] = 0x00;
-		spi_Tx[1] = 0x00;
-
+		// get initial position
 		for (int i = 0; i < 100; i++)
 		{
-			checkStatus = sendByte(spi_Tx, true, hspi, htim, spi_Rx);
-			if (checkStatus == HAL_OK)
+			if (amt223SendReceive(hspi, htim, spi_Tx, spi_Rx))
 			{
-				checkStatus = sendByte(spi_Tx + 1, false, hspi, htim, spi_Rx + 1);
-				if (checkStatus == HAL_OK)
-				{
-					// If both positions are valid and correct, then we can use the checkbit formula
-					finalPosition = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
+				// If both positions are valid and correct, then we can use the checkbit formula
+				uint16_t finalPosition = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
 
-					if (amt223Check(finalPosition))
-					{
-						finalPosition &= 0b0011111111111111;
-						initialPosition = finalPosition;
-					}
+				if (amt223Check(finalPosition))
+				{
+					initialPosition = finalPosition & 0x3FFF;
 				}
 			}
 		}
@@ -68,23 +58,17 @@ extern "C"
 		// Continually gets the position from the optical encoder
 		while (true)
 		{
-			// TODO: investigate if breaking the byte sending corrupts subsequent data
-			checkStatus = sendByte(spi_Tx, true, hspi, htim, spi_Rx);
-			if (checkStatus == HAL_OK)
+			if (amt223SendReceive(hspi, htim, spi_Tx, spi_Rx))
 			{
-				checkStatus = sendByte(spi_Tx + 1, false, hspi, htim, spi_Rx + 1);
-				if (checkStatus == HAL_OK)
-				{
-					// If both positions are valid and correct, then we can use the checkbit formula
-					int16_t finalPosition = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
+				uint16_t finalPosition = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
 
-					if (amt223Check(finalPosition))
-					{
-						finalPosition &= 0b0011111111111111;
-						relativePosition = finalPosition - initialPosition;
-						float duty       = (float)relativePosition / MAX_AMT223B_VALUE;
-						vesc->SetDutyCycle(duty * 12);
-					}
+				if (amt223Check(finalPosition))
+				{
+					finalPosition &= 0x3FFF;
+					relativePosition = finalPosition - initialPosition;
+
+					float duty       = (float)relativePosition / MAX_AMT223B_VALUE;
+					vesc->SetDutyCycle(duty * 12);
 				}
 			}
 		}

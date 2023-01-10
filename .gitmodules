@@ -1,3 +1,6 @@
-[submodule "can-lib"]
-	path = can-lib
+[submodule "lib/can-lib"]
+	path = lib/can-lib
 	url = https://github.com/Purdue-Solar/can-lib
+[submodule "lib/common-lib"]
+	path = lib/common-lib
+	url = https://github.com/Purdue-Solar/common-lib

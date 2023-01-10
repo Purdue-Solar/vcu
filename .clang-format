@@ -1,0 +1,35 @@
+BasedOnStyle: Microsoft
+
+UseTab: AlignWithSpaces
+IndentWidth: 4
+TabWidth: 4
+ColumnLimit: 0
+
+BraceWrapping: 
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  BeforeLambdaBody: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterClass: true
+  AfterExternBlock: true
+  AfterNamespace: true
+  AfterFunction: true
+  AfterControlStatement: MultiLine
+
+PackConstructorInitializers: NextLine
+
+PointerAlignment: Left
+
+AlignConsecutiveMacros: Consecutive
+AlignEscapedNewlines: Right
+AlignTrailingComments: true
+AlignConsecutiveAssignments: Consecutive
+
+AlignOperands: Align
+AllowShortBlocksOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+BinPackParameters: false
+AlignArrayOfStructures: Right
+
+Cpp11BracedListStyle: false

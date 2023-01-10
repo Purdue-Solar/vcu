@@ -1,0 +1,17 @@
+# STM32 Cube IDE build artifacts
+/Debug
+/Debug/*
+/Release
+/Release/*
+
+# STM32 Cube IDE debug configurations
+*.launch
+
+# STM32 Cube IDE settings
+.settings/*
+
+# C/C++ build artifacts
+*.[oa]
+*.d
+*.so
+*.su

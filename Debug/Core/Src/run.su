@@ -1,1 +1,0 @@
-../Core/Src/run.cpp:12:6:void startUp(TIM_HandleTypeDef*, CAN_HandleTypeDef*, SPI_HandleTypeDef*)	112	static

@@ -1,4 +1,7 @@
 #MicroXplorer Configuration settings - do not modify
+CAD.formats=
+CAD.pinconfig=
+CAD.provider=
 CAN.BS1=CAN_BS1_3TQ
 CAN.BS2=CAN_BS2_2TQ
 CAN.CalculateBaudRate=100000
@@ -36,8 +39,8 @@ Mcu.PinsNb=12
 Mcu.ThirdPartyNb=0
 Mcu.UserConstants=
 Mcu.UserName=STM32F072RBTx
-MxCube.Version=6.6.1
-MxDb.Version=DB.6.0.60
+MxCube.Version=6.7.0
+MxDb.Version=DB.6.0.70
 NVIC.ForceEnableDMAVector=true
 NVIC.HardFault_IRQn=true\:0\:0\:false\:false\:true\:false\:false\:false
 NVIC.NonMaskableInt_IRQn=true\:0\:0\:false\:false\:true\:false\:false\:false

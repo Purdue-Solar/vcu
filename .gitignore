@@ -41,7 +41,7 @@
 *.launch
 
 # STM32 Cube IDE settings
-.settings/*
+/.settings/*
 
 # VS Code
 .vscode/

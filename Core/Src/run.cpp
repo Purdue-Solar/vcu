@@ -15,27 +15,23 @@ using namespace PSR;
 
 extern "C"
 {
-	VescCAN* vesc;
-
 	void run(TIM_HandleTypeDef* htim, CAN_HandleTypeDef* hcan, SPI_HandleTypeDef* hspi)
 	{
 		// Initialize timer
 		HAL_TIM_Base_Start(htim);
 
 		// Initializes the can communications
-		CANBus::Config config = { .AutoRetransmit = true, .FilterMask = 0x7FF };
+		CANBus::Config config = { .AutoRetransmit = true, .Mode = CANBus::ReceiveMode::Polling };
 
 		CANBus can = PSR::CANBus(*hcan, config);
 		can.Init();
-		vesc = new VescCAN(can, 113);
+		VescCAN vesc = VescCAN(can, 113);
 
 		HAL_Delay(250);
 
 		// SPI Setup
 		uint8_t spi_Tx[2] = {0x00, 0x00};
 		uint8_t spi_Rx[2];
-
-		HAL_StatusTypeDef checkStatus;
 
 		int16_t initialPosition;
 		int16_t relativePosition;
@@ -68,7 +64,7 @@ extern "C"
 					relativePosition = finalPosition - initialPosition;
 
 					float duty       = (float)relativePosition / MAX_AMT223B_VALUE;
-					vesc->SetDutyCycle(duty * 12);
+					vesc.SetDutyCycle(duty * 12);
 				}
 			}
 		}

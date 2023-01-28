@@ -23,12 +23,12 @@ extern "C"
 #endif
 
 #ifdef __cplusplus
-constexpr uint16_t MAX_AMT223B_VALUE = 16383;
+constexpr uint16_t MAX_POS = 900;
 #else
-#define MAX_AMT223B_VALUE 16383
+#define MAX_POS 900
 #endif
 
-void run(TIM_HandleTypeDef * htim, CAN_HandleTypeDef * hcan,SPI_HandleTypeDef * hspi);
+void run(TIM_HandleTypeDef * htim, CAN_HandleTypeDef * hcan,SPI_HandleTypeDef * hspi, UART_HandleTypeDef * husart);
 
 #ifdef __cplusplus
 }

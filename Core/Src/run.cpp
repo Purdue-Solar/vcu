@@ -34,14 +34,10 @@ extern "C"
 		uint8_t spi_Tx[2];
 		uint8_t spi_Rx[2];
 
-		int16_t initialPosition;
-		int16_t relativePosition;
-
 		uint16_t position = 1;
 
 		spi_Tx[0] = 0x00;
 		spi_Tx[1] = 0x70;
-
 		while(position != 0)
 		{
 			if (amt223SendReceive(hspi, htim, spi_Tx, spi_Rx))
@@ -56,62 +52,10 @@ extern "C"
 			HAL_Delay(500);
 
 		}
-		// get initial position
-		/*
-		for (int i = 0; i < 100; i++)
-		{
-			if (amt223SendReceive(hspi, htim, spi_Tx, spi_Rx))
-			{
-				// If both positions are valid and correct, then we can use the checkbit formula
-				uint16_t finalPosition = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
-
-				if (amt223Check(finalPosition))
-				{
-					initialPosition = finalPosition & 0x3FFF;
-				}
-			}
-		}
-		*/
 		// Infinite Loop
 		// Continually gets the position from the optical encoder
 		while (true)
 		{
-			/*
-			if (amt223SendReceive(hspi, htim, spi_Tx, spi_Rx))
-			{
-				uint16_t finalPosition = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
-
-				if (amt223Check(finalPosition))
-				{
-					finalPosition &= 0x3FFF;
-					relativePosition = finalPosition - initialPosition;
-
-					//Preventing back movement from optical encoder
-					if(relativePosition < 0)
-					{
-						relativePosition = 0;
-					}
-
-					float duty       = (float)relativePosition / MAX_AMT223B_VALUE;
-
-					//Clamp output
-					if(duty > 1)
-					{
-						duty = (1/12);
-					}
-
-					//Dead zone
-					if(duty < .005)
-					{
-						duty = 0;
-					}
-					x++;
-					vesc.SetDutyCycle(duty * 12);
-					sprintf(MSG, "Initial:%d Final:%d Relative:%d X:%d\r\n",initialPosition,finalPosition,relativePosition, x);
-					HAL_UART_Transmit(huart,(uint8_t*) MSG, sizeof(MSG), 100);
-					HAL_Delay(500);
-				}
-			}*/
 			spi_Tx[0] = 0x00;
 			spi_Tx[1] = 0x00;
 			if (amt223SendReceive(hspi, htim, spi_Tx, spi_Rx))
@@ -139,10 +83,46 @@ extern "C"
 					{
 						duty = 0;
 					}
-					vesc.SetDutyCycle(duty);
 
-					sprintf(MSG, "Position:%d Duty: %d\r\n",position,(int)(duty*100));
-					HAL_UART_Transmit(huart,(uint8_t*) MSG, sizeof(MSG), 100);
+					int val = (GPIOC->IDR >> 2) & 3; //high enable?
+					int cruise = (GPIOC->IDR >> 1) & 1; //low enable?
+					if(cruise)
+					{
+						HAL_UART_Transmit(huart,(uint8_t*) "Cruise Not Set: ", sizeof("Cruise Not Set: "), 100);
+					}
+					else
+					{
+						if(val == 1 || val == 2)
+						{
+							HAL_UART_Transmit(huart,(uint8_t*) "Cruise Set", sizeof("Cruise Set"), 100);
+							continue;
+						}
+						else
+						{
+							HAL_UART_Transmit(huart,(uint8_t*) "Cruise Not Set: ", sizeof("Cruise Not Set: "), 100);
+						}
+					}
+					//forward
+					if(val == 1)
+					{
+						HAL_UART_Transmit(huart,(uint8_t*) "Forward,", sizeof("Forward,"), 100);
+						vesc.SetDutyCycle(duty);
+					}
+
+					//reverse
+					else if(val == 2)
+					{
+						HAL_UART_Transmit(huart,(uint8_t*) "Reverse,", sizeof("Reverse,"), 100);
+						duty = -1 * duty * .5;
+						vesc.SetDutyCycle(duty);
+					}
+						else
+					{
+					//neutral - does not transmit
+					HAL_UART_Transmit(huart,(uint8_t*) "Neutral,", sizeof("Neutral,"), 100);
+				}
+				sprintf(MSG, "Position:%d Duty: %d\r\n",position,(int)(duty*100));
+				HAL_UART_Transmit(huart,(uint8_t*) MSG, sizeof(MSG), 100);
 				}
 			}
 		}

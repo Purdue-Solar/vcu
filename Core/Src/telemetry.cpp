@@ -10,7 +10,7 @@ namespace PSR
 
 void Telemetry::SendCAN()
 {
-	CANBus::Frame frame;
+	CANBus::Frame frame; 	
 	while (this->_can.Receive(frame))
 	{
 		union
@@ -21,7 +21,7 @@ void Telemetry::SendCAN()
 				uint8_t IsExtended; // 1 or 0, whether the frame is extended
 				uint8_t IsRTR;      // 1 or 0, whether the frame is a remote transmission
 				uint8_t Length;     // Number of bytes in the data
-				uint8_t Data[8];    // Payload of the CAN frame
+				uint64_t Data; 	// Payload of the CAN frame
 			};
 			uint8_t Bytes[16];
 		} buffer;
@@ -31,8 +31,7 @@ void Telemetry::SendCAN()
 		buffer.IsExtended = frame.IsExtended ? 1 : 0;
 		buffer.IsRTR      = frame.IsRTR ? 1 : 0;
 		buffer.Length     = frame.Length;
-
-		memcpy(buffer.Bytes, frame.Data.Bytes, frame.Length);
+		buffer.Data = frame.Data.Value;
 
 		HAL_UART_Transmit(this->_uart, buffer.Bytes, sizeof(buffer), 100);
 		this->_syncCount++;

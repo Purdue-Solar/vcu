@@ -10,12 +10,18 @@
 #include "can_lib.h"
 #include "run.h"
 #include "vesc.h"
+#include "telemetry.h"
 
 using namespace PSR;
 
 extern "C"
 {
-	void run(TIM_HandleTypeDef* htim, CAN_HandleTypeDef* hcan, SPI_HandleTypeDef* hspi, UART_HandleTypeDef * huart)
+	void run(
+			TIM_HandleTypeDef* htim,
+			CAN_HandleTypeDef* hcan,
+			SPI_HandleTypeDef* hspi,
+			UART_HandleTypeDef * huart,
+			UART_HandleTypeDef* uart3)
 	{
 		char MSG[65] = {'\0'};
 		// Initialize timer
@@ -27,6 +33,9 @@ extern "C"
 		CANBus can = PSR::CANBus(*hcan, config);
 		can.Init();
 		VescCAN vesc = VescCAN(can, 113);
+
+		Telemetry telem = Telemetry(can, uart3);
+		while (true) telem.SendCAN();
 
 		HAL_Delay(250);
 
@@ -56,6 +65,8 @@ extern "C"
 		// Continually gets the position from the optical encoder
 		while (true)
 		{
+			telem.SendCAN();
+
 			spi_Tx[0] = 0x00;
 			spi_Tx[1] = 0x00;
 			if (amt223SendReceive(hspi, htim, spi_Tx, spi_Rx))

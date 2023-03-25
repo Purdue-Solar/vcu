@@ -110,7 +110,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-  run(&htim3, &hcan, &hspi1, &huart2);
+  run(&htim3, &hcan, &hspi1, &huart2, &huart3);
   /* USER CODE END 2 */
 
   /* Infinite loop */

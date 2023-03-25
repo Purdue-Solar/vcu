@@ -35,7 +35,6 @@ extern "C"
 		VescCAN vesc = VescCAN(can, 113);
 
 		Telemetry telem = Telemetry(can, uart3);
-		while (true) telem.SendCAN();
 
 		HAL_Delay(250);
 
@@ -65,8 +64,9 @@ extern "C"
 		// Continually gets the position from the optical encoder
 		while (true)
 		{
-			telem.SendCAN();
+			//telem.SendCAN();	// Add this to the CAN interrupt
 
+			// TODO: Joey add this to a timer interrupt.
 			spi_Tx[0] = 0x00;
 			spi_Tx[1] = 0x00;
 			if (amt223SendReceive(hspi, htim, spi_Tx, spi_Rx))

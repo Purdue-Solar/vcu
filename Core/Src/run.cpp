@@ -64,7 +64,7 @@ extern "C"
 		// Continually gets the position from the optical encoder
 		while (true)
 		{
-			//telem.SendCAN();	// Add this to the CAN interrupt
+			telem.SendCAN();	// Add this to the CAN interrupt
 
 			// TODO: Joey add this to a timer interrupt.
 			spi_Tx[0] = 0x00;

@@ -29,7 +29,8 @@ constexpr uint16_t MAX_POS = 900;
 #endif
 
 void run(TIM_HandleTypeDef * htim, CAN_HandleTypeDef * hcan,SPI_HandleTypeDef * hspi, UART_HandleTypeDef * husart, UART_HandleTypeDef* uart3);
-
+void AMT223bStartup(TIM_HandleTypeDef * htim, CAN_HandleTypeDef * hcan,SPI_HandleTypeDef * hspi, UART_HandleTypeDef * husart, UART_HandleTypeDef* uart3);
+void AMT223bRun(TIM_HandleTypeDef * htim, CAN_HandleTypeDef * hcan,SPI_HandleTypeDef * hspi, UART_HandleTypeDef * husart, UART_HandleTypeDef* uart3);
 #ifdef __cplusplus
 }
 #endif

@@ -1,6 +1,17 @@
 #include "AMT223-b.h"
-#include "delay.h"
 #include "bit_operations.h"
+#include "can_lib.h"
+#include "delay.h"
+#include "stm32_includer.h"
+#include "vesc.h"
+#include STM32_INCLUDE(BOARD_STM32, hal.h)
+#include STM32_INCLUDE(BOARD_STM32, hal_def.h)
+#include STM32_INCLUDE(BOARD_STM32, hal_tim.h)
+#include STM32_INCLUDE(BOARD_STM32, hal_gpio.h)
+
+#include <cstdio>
+#include <cstring>
+
 using namespace PSR;
 
 bool amt223Check(uint16_t value)
@@ -56,5 +67,111 @@ void amt223Reset(SPI_HandleTypeDef* hspi, TIM_HandleTypeDef* htim)
 			if (amt223Check(finalPosition))
 				break;
 		}
+	}
+}
+
+void amt223Setup(TIM_HandleTypeDef* timer1MHz, SPI_HandleTypeDef* encoderSPI)
+{
+	timer1MHz->Instance->CR1 |= TIM_CR1_CEN;
+
+	// SPI Setup
+	uint8_t spi_Tx[2];
+	uint8_t spi_Rx[2];
+
+	uint16_t position = 0xFFFF;
+
+	spi_Tx[0] = 0x00;
+	spi_Tx[1] = 0x70;
+	do {
+		if (amt223SendReceive(encoderSPI, timer1MHz, spi_Tx, spi_Rx))
+		{
+			position = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
+
+			if (amt223Check(position))
+			{
+				position &= 0x3FFF;
+			}
+		}
+		HAL_Delay(100);
+	} while (position != 0);
+}
+
+static float currentDuty;
+
+void amt223bPoll(SPI_HandleTypeDef* encoderSPI, TIM_HandleTypeDef* timer1MHz, PSR::VescCAN& vesc, UART_HandleTypeDef* debugUART)
+{
+	constexpr uint16_t MAX_POS = 900;
+
+	char msg[65] = { '\0' };
+
+	// SPI Setup
+	uint8_t spi_Tx[2];
+	uint8_t spi_Rx[2];
+
+	spi_Tx[0] = 0x00;
+	spi_Tx[1] = 0x00;
+
+	int val    = (~(GPIOC->IDR >> 2)) & 0b11; // 2 bits active low forward/reverse
+	int cruise = (~(GPIOC->IDR >> 1)) & 0b01; // 1 bit active low cruise control enable
+
+	uint16_t position = 0;
+
+	if (cruise && (val == 0b01 || val == 0b10))
+	{
+		// Cruise control set and not in neutral.
+		HAL_UART_Transmit(debugUART, (uint8_t*)"Cruise Set: ", sizeof("Cruise Set: "), 100);
+		vesc.SetDutyCycle(currentDuty);
+	}
+	else
+	{
+		HAL_UART_Transmit(debugUART, (uint8_t*)"Cruise Not Set: ", sizeof("Cruise Not Set: "), 100);
+
+		if (amt223SendReceive(encoderSPI, timer1MHz, spi_Tx, spi_Rx))
+		{
+			position = ((uint16_t)spi_Rx[0] << 8) | (uint16_t)spi_Rx[1];
+			if (amt223Check(position))
+			{
+				position &= 0x3FFF;
+
+				// clamp position at 0
+				if (position > (MAX_POS * 2))
+				{
+					position = 0;
+				}
+
+				currentDuty = (float)position / MAX_POS;
+				// Clamp output
+				if (currentDuty > 1)
+				{
+					currentDuty = 1;
+				}
+				// Dead zone
+				if (currentDuty < 0.05)
+				{
+					currentDuty = 0;
+				}
+			}
+			// forward
+			if (val == 0b01)
+			{
+				HAL_UART_Transmit(debugUART, (uint8_t*)"Forward,", sizeof("Forward,"), 100);
+				vesc.SetDutyCycle(currentDuty);
+			}
+
+			// reverse
+			else if (val == 0b10)
+			{
+				HAL_UART_Transmit(debugUART, (uint8_t*)"Reverse,", sizeof("Reverse,"), 100);
+				vesc.SetDutyCycle(currentDuty * -0.5);
+			}
+			else
+			{
+				// neutral - does not transmit
+				HAL_UART_Transmit(debugUART, (uint8_t*)"Neutral,", sizeof("Neutral,"), 100);
+			}
+			sprintf(msg, "Position:%d Duty: %d\r\n", position, (int)(currentDuty * 100));
+		}
+
+		HAL_UART_Transmit(debugUART, (uint8_t*)msg, strlen(msg), 100);
 	}
 }

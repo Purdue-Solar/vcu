@@ -8,8 +8,8 @@
 #ifndef INC_RUN_H_
 #define INC_RUN_H_
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -22,15 +22,15 @@ extern "C"
 {
 #endif
 
-#ifdef __cplusplus
-constexpr uint16_t MAX_POS = 900;
-#else
-#define MAX_POS 900
-#endif
+	void run(
+		TIM_HandleTypeDef* timer1MHz,
+		CAN_HandleTypeDef* hcan,
+		SPI_HandleTypeDef* encoderSPI,
+		UART_HandleTypeDef* debugUART,
+		UART_HandleTypeDef* telemUART,
+		TIM_HandleTypeDef* pedalTimer,
+		TIM_HandleTypeDef* telemTimer);
 
-void run(TIM_HandleTypeDef * htim, CAN_HandleTypeDef * hcan,SPI_HandleTypeDef * hspi, UART_HandleTypeDef * husart, UART_HandleTypeDef* uart3);
-void AMT223bStartup(TIM_HandleTypeDef * htim, CAN_HandleTypeDef * hcan,SPI_HandleTypeDef * hspi, UART_HandleTypeDef * husart, UART_HandleTypeDef* uart3);
-void AMT223bRun(TIM_HandleTypeDef * htim, CAN_HandleTypeDef * hcan,SPI_HandleTypeDef * hspi, UART_HandleTypeDef * husart, UART_HandleTypeDef* uart3);
 #ifdef __cplusplus
 }
 #endif

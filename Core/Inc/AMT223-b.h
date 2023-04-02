@@ -12,12 +12,12 @@
 #ifndef __AMT223_B_H
 #define __AMT223_B_H
 
-#include "run.h"
-
-#if __cplusplus
-extern "C"
-{
-#endif
+#include "can_lib.h"
+#include "vesc.h"
+#include "stm32_includer.h"
+#include STM32_INCLUDE(BOARD_STM32, hal.h)
+#include STM32_INCLUDE(BOARD_STM32, hal_def.h)
+#include STM32_INCLUDE(BOARD_STM32, hal_tim.h)
 
 /**
  * @brief Checks if the received position is valid
@@ -59,8 +59,22 @@ bool amt223SendReceive(SPI_HandleTypeDef* hspi, TIM_HandleTypeDef* htim, uint8_t
  */
 void amt223Reset(SPI_HandleTypeDef* hspi, TIM_HandleTypeDef* htim);
 
-#ifdef __cplusplus
-}
-#endif
+/**
+ * @brief Initialize the AMT 223-b
+ * 
+ * @param timer1MHz timer set to a 1MHz clock
+ * @param encoderSPI SPI connected to the optical encoder
+ */
+void amt223Setup(TIM_HandleTypeDef* timer1MHz, SPI_HandleTypeDef* encoderSPI);
+
+/**
+ * @brief Poll the pedal and send the duty cycle to the VESC
+ * 
+ * @param timer1MHz pointer to a timer set to 1MHz
+ * @param vesc reference to VESC interface
+ * @param encoderSPI pointer to encoder SPI
+ * @param debugUART pointer debug UART
+ */
+void amt223bPoll(SPI_HandleTypeDef* encoderSPI, TIM_HandleTypeDef* timer1MHz, PSR::VescCAN& vesc, UART_HandleTypeDef* debugUART);
 
 #endif

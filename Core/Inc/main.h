@@ -57,6 +57,14 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define Cruise_Control_Pin GPIO_PIN_1
+#define Cruise_Control_GPIO_Port GPIOC
+#define Forward_Pin GPIO_PIN_2
+#define Forward_GPIO_Port GPIOC
+#define Reverse_Pin GPIO_PIN_3
+#define Reverse_GPIO_Port GPIOC
+#define SPI1_CS_Pin GPIO_PIN_3
+#define SPI1_CS_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

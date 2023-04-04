@@ -24,7 +24,8 @@ extern "C"
 		UART_HandleTypeDef* debugUART,
 		UART_HandleTypeDef* telemUART,
 		TIM_HandleTypeDef* pedalTimer,
-		TIM_HandleTypeDef* telemTimer)
+		TIM_HandleTypeDef* telemTimer,
+		TIM_HandleTypeDef* indicatorTimer)
 	{
 		// Initialize timer
 		HAL_TIM_Base_Start(timer1MHz);
@@ -41,6 +42,7 @@ extern "C"
 
 		amt223Setup(timer1MHz, encoderSPI);
 
+		IndicatorsInterruptSetup(indicatorTimer, TIM16_IRQn, can);
 		TelemetryInterruptSetup(telemTimer, TIM6_DAC_IRQn, telem);
 		PedalInterruptSetup(pedalTimer, TIM7_IRQn, encoderSPI, timer1MHz, vesc, debugUART);
 

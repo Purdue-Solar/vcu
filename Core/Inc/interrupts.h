@@ -21,6 +21,15 @@
 #include STM32_INCLUDE(BOARD_STM32, hal_spi.h)
 
 /**
+ * @brief Initialize the interrupts for polling the indicators
+ * 
+ * @param indicatorTimer Pointer to a timer used to poll the indicators
+ * @param irq IRQ type to enable
+ * @param can Reference to CAN interface
+ */
+void IndicatorsInterruptSetup(TIM_HandleTypeDef* indicatorTimer, IRQn_Type irq, PSR::CANBus& can);
+
+/**
  * @brief Initializes the pedal polling interrupt
  * 
  * @param pollingTimer Pointer to timer used to poll the pedal position

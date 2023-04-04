@@ -162,7 +162,7 @@ void amt223bPoll(SPI_HandleTypeDef* encoderSPI, TIM_HandleTypeDef* timer1MHz, PS
 			else if (val == 0b10)
 			{
 				HAL_UART_Transmit(debugUART, (uint8_t*)"Reverse,", sizeof("Reverse,"), 100);
-				vesc.SetDutyCycle(currentDuty * -0.5);
+				vesc.SetDutyCycle(-currentDuty);
 			}
 			else
 			{

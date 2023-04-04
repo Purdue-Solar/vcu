@@ -29,7 +29,8 @@ extern "C"
 		UART_HandleTypeDef* debugUART,
 		UART_HandleTypeDef* telemUART,
 		TIM_HandleTypeDef* pedalTimer,
-		TIM_HandleTypeDef* telemTimer);
+		TIM_HandleTypeDef* telemTimer,
+		TIM_HandleTypeDef* indicatorTimer);
 
 #ifdef __cplusplus
 }

@@ -21,13 +21,14 @@ static PSR::CANBus* _inidcatorsCAN;
 
 void IndicatorsInterruptSetup(TIM_HandleTypeDef* indicatorTimer, IRQn_Type irq, PSR::CANBus& can)
 {
+	HAL_TIM_Base_Stop(indicatorTimer);
 	// Enable timer interrupt
 	indicatorTimer->Instance->DIER |= TIM_DIER_UIE;
-	HAL_NVIC_EnableIRQ(irq);
 
 	_indicatorTimer = indicatorTimer;
 	_inidcatorsCAN  = &can;
 
+	HAL_NVIC_EnableIRQ(irq);
 	HAL_TIM_Base_Start(indicatorTimer);
 }
 
@@ -39,9 +40,9 @@ static UART_HandleTypeDef* _debugUART;
 
 void PedalInterruptSetup(TIM_HandleTypeDef* pollingTimer, IRQn_Type irq, SPI_HandleTypeDef* encoderSPI, TIM_HandleTypeDef* timer1MHz, PSR::VescCAN& vesc, UART_HandleTypeDef* debugUART)
 {
+	HAL_TIM_Base_Stop(pollingTimer);
 	// Enable timer interrupt
 	pollingTimer->Instance->DIER |= TIM_DIER_UIE;
-	HAL_NVIC_EnableIRQ(irq);
 
 	_pollingTimer = pollingTimer;
 	_encoderSpi   = encoderSPI;
@@ -49,6 +50,7 @@ void PedalInterruptSetup(TIM_HandleTypeDef* pollingTimer, IRQn_Type irq, SPI_Han
 	_vesc         = &vesc;
 	_debugUART    = debugUART;
 
+	HAL_NVIC_EnableIRQ(irq);
 	HAL_TIM_Base_Start(timer1MHz);
 	HAL_TIM_Base_Start(pollingTimer);
 }
@@ -58,13 +60,14 @@ static PSR::Telemetry* _telem;
 
 void TelemetryInterruptSetup(TIM_HandleTypeDef* telemetryTimer, IRQn_Type irq, PSR::Telemetry& telem)
 {
+	HAL_TIM_Base_Stop(telemetryTimer);
 	// Enable timer interrupt
 	telemetryTimer->Instance->DIER |= TIM_DIER_UIE;
-	HAL_NVIC_EnableIRQ(irq);
 
 	_telemetryTimer = telemetryTimer;
 	_telem          = &telem;
 
+	HAL_NVIC_EnableIRQ(irq);
 	HAL_TIM_Base_Start(telemetryTimer);
 }
 

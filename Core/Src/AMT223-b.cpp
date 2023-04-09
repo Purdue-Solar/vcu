@@ -96,6 +96,11 @@ void amt223Setup(TIM_HandleTypeDef* timer1MHz, SPI_HandleTypeDef* encoderSPI)
 	} while (position != 0);
 }
 
+static float _acceleratorCurve(float duty)
+{
+	return duty * duty;
+}
+
 static float currentDuty;
 
 void amt223bPoll(SPI_HandleTypeDef* encoderSPI, TIM_HandleTypeDef* timer1MHz, PSR::VescCAN& vesc, UART_HandleTypeDef* debugUART)
@@ -120,7 +125,7 @@ void amt223bPoll(SPI_HandleTypeDef* encoderSPI, TIM_HandleTypeDef* timer1MHz, PS
 	{
 		// Cruise control set and not in neutral.
 		HAL_UART_Transmit(debugUART, (uint8_t*)"Cruise Set: ", sizeof("Cruise Set: "), 100);
-		vesc.SetDutyCycle(currentDuty);
+		vesc.SetDutyCycle(_acceleratorCurve(currentDuty));
 	}
 	else
 	{
@@ -146,7 +151,7 @@ void amt223bPoll(SPI_HandleTypeDef* encoderSPI, TIM_HandleTypeDef* timer1MHz, PS
 					currentDuty = 1;
 				}
 				// Dead zone
-				if (currentDuty < 0.05)
+				if (currentDuty < 0.0125)
 				{
 					currentDuty = 0;
 				}
@@ -155,21 +160,21 @@ void amt223bPoll(SPI_HandleTypeDef* encoderSPI, TIM_HandleTypeDef* timer1MHz, PS
 			if (val == 0b01)
 			{
 				HAL_UART_Transmit(debugUART, (uint8_t*)"Forward,", sizeof("Forward,"), 100);
-				vesc.SetDutyCycle(currentDuty);
+				vesc.SetDutyCycle(_acceleratorCurve(currentDuty));
 			}
 
 			// reverse
 			else if (val == 0b10)
 			{
 				HAL_UART_Transmit(debugUART, (uint8_t*)"Reverse,", sizeof("Reverse,"), 100);
-				vesc.SetDutyCycle(-currentDuty);
+				vesc.SetDutyCycle(-_acceleratorCurve(currentDuty));
 			}
 			else
 			{
 				// neutral - does not transmit
 				HAL_UART_Transmit(debugUART, (uint8_t*)"Neutral,", sizeof("Neutral,"), 100);
 			}
-			sprintf(msg, "Position:%d Duty: %d\r\n", position, (int)(currentDuty * 100));
+			sprintf(msg, "Position:%d Duty: %d\r\n", position, (int)(_acceleratorCurve(currentDuty) * 100));
 		}
 
 		HAL_UART_Transmit(debugUART, (uint8_t*)msg, strlen(msg), 100);

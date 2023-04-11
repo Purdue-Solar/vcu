@@ -176,7 +176,6 @@ void amt223bPoll(SPI_HandleTypeDef* encoderSPI, TIM_HandleTypeDef* timer1MHz, PS
 			}
 			sprintf(msg, "Position:%d Duty: %d\r\n", position, (int)(_acceleratorCurve(currentDuty) * 100));
 		}
-
 		HAL_UART_Transmit(debugUART, (uint8_t*)msg, strlen(msg), 100);
 	}
 }
